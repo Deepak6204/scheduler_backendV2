@@ -12,7 +12,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/api/*.js'],
+  apis: ['./src/api/auth/AuthRoutes.js'],
 };
 
 export default swaggerOptions;
