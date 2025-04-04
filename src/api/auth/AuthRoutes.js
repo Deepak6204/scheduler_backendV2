@@ -9,7 +9,7 @@ const router = express.Router();
  * /api/auth/signup:
  *   post:
  *     summary: Register a new user
- *     description: Allows a new user to sign up by providing their name, email, password, and phone number.
+ *     description: Allows a new user to sign up by providing their name, email, password, phone number, and optional availabilities.
  *     tags:
  *       - Auth
  *     requestBody:
@@ -38,6 +38,30 @@ const router = express.Router();
  *               phoneNumber:
  *                 type: string
  *                 example: "+1234567890"
+ *               availabilities:
+ *                 type: array
+ *                 description: Optional array of user availability time slots
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - dayOfWeek
+ *                     - startTime
+ *                     - endTime
+ *                   properties:
+ *                     dayOfWeek:
+ *                       type: string
+ *                       example: Monday
+ *                     startTime:
+ *                       type: string
+ *                       format: time
+ *                       example: "09:00"
+ *                     endTime:
+ *                       type: string
+ *                       format: time
+ *                       example: "11:00"
+ *                     isActive:
+ *                       type: boolean
+ *                       example: true
  *     responses:
  *       201:
  *         description: User created successfully
@@ -89,6 +113,7 @@ const router = express.Router();
  *                   type: string
  *                   example: Internal server error
  */
+
 router.post('/signup', AuthController.signup);
 
 /**

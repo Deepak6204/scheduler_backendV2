@@ -2,34 +2,59 @@ import jwt from 'jsonwebtoken';
 import AuthModel from './AuthModel.js';
 import bcrypt from 'bcryptjs';
 import { sendResetPasswordEmail } from '../../services/EmailService.js';
-
+import pool from '../../config/DatabaseConfig.js';
+import AvModel from '../availability/AvailabilityModel.js';
+import UuidGen from '../../services/UuidGen.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 class AuthController {
   static async signup(req, res) {
-    const { name, email, password, phoneNumber } = req.body;
+    const { name, email, password, phoneNumber, availabilities } = req.body;
+    const connection = await pool.getConnection();
 
     try {
+      await connection.beginTransaction();
+
       const existingUser = await AuthModel.getUserByEmail(email);
       if (existingUser) {
+        connection.release();
         return res.status(400).json({
           status: 'error',
           message: 'Email is already registered',
         });
       }
 
-      const user_id = await AuthModel.createUser({ name, email, password, phoneNumber });
-      console.log('New user created:', user_id);
-      
+      const { userId, userIdBinary } = await AuthModel.createUser({
+        name,
+        email,
+        password,
+        phoneNumber,
+        connection,
+      });
+
+      if (Array.isArray(availabilities) && availabilities.length > 0) {
+        const availabilityWithUserId = availabilities.map(item => ({
+          ...item,
+          userId,
+        }));
+
+        await AvModel.addMultipleAvailabilities(availabilityWithUserId, connection);
+      }
+
+      await connection.commit();
+      connection.release();
+
       return res.status(201).json({
         status: 'success',
-        message: 'User created successfully',
+        message: 'User and availabilities created successfully',
         data: {
-          userId: user_id,
+          userId,
           email,
         },
       });
     } catch (err) {
+      await connection.rollback();
+      connection.release();
       console.error('Error during signup:', err);
       return res.status(500).json({
         status: 'error',
@@ -37,6 +62,7 @@ class AuthController {
       });
     }
   }
+
 
   static async login(req, res) {
     const { email, password } = req.body;
@@ -87,7 +113,7 @@ class AuthController {
   static async getProfile(req, res) {
     try {
       const user = await AuthModel.getUserByEmail(req.user.email);
-
+      console.log('User:', user); 
       if (!user) {
         return res.status(404).json({
           status: 'error',
@@ -95,10 +121,12 @@ class AuthController {
         });
       }
 
+      user.user_id = UuidGen.binaryToUuid(user.user_id);
+
       return res.status(200).json({
         status: 'success',
         data: {
-          id: user.id,
+          id: user.user_id,
           name: user.name,
           email: user.email,
           phoneNumber: user.phoneNumber,

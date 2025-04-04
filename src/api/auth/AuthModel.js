@@ -16,23 +16,32 @@ class AuthModel {
     }
   }
 
-  static async createUser({ name, email, password, phoneNumber }) {
-    const connection = await pool.getConnection();
+  static async createUser({ name, email, password, phoneNumber, connection = null }) {
+    let localConnection = connection;
+    let isLocalConnection = false;
+
+    if (!connection) {
+      localConnection = await pool.getConnection();
+      isLocalConnection = true;
+    }
+
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const userId = UuidGen.getUuid();
+      const userId = UuidGen.generateUuidV7Binary();
       const userIdBinary = UuidGen.uuidToBinary(userId);
       const query = `
         INSERT INTO users (user_id, name, email, password, phoneNumber)
         VALUES (?, ?, ?, ?, ?)
       `;
-      await connection.query(query, [userIdBinary, name, email, hashedPassword, phoneNumber]);
-      return userId;
+      await localConnection.query(query, [userIdBinary, name, email, hashedPassword, phoneNumber]);
+      return { userId, userIdBinary };
     } catch (err) {
       console.error('Error creating user:', err);
       throw err;
     } finally {
-      connection.release();
+      if (isLocalConnection) {
+        localConnection.release();
+      }
     }
   }
 
