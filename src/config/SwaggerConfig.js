@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -11,8 +14,22 @@ const swaggerOptions = {
         url: `http://localhost:${process.env.PORT}`,
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
-  apis: ['./src/api/auth/AuthRoutes.js'],
+  apis: ['./src/api/auth/AuthRoutes.js'], // include all route files that contain Swagger comments
 };
 
 export default swaggerOptions;
