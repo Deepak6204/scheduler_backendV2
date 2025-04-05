@@ -29,7 +29,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/api/auth/AuthRoutes.js', './src/api/availability/AvailabilityRoutes.js'], // include all route files that contain Swagger comments
+  apis: ['./src/api/auth/AuthRoutes.js', './src/api/availability/AvailabilityRoutes.js', './src/api/events/EventRoutes.js'], // include all route files that contain Swagger comments
 };
 
 export default swaggerOptions;

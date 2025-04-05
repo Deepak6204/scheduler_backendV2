@@ -83,9 +83,9 @@ class AuthController {
           message: 'Invalid email or password',
         });
       }
-
-      const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
-        expiresIn: '1h',
+      user.user_id = UuidGen.binaryToUuid(user.user_id);
+      const token = jwt.sign({ userId: user.user_id, email: user.email }, JWT_SECRET, {
+        expiresIn: '1d',
       });
 
       return res.status(200).json({

@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerOptions from './config/SwaggerConfig.js';
 import authrouter from './api/auth/AuthRoutes.js'
 import availabilityRouter from './api/availability/AvailabilityRoutes.js'
+import eventRouter from './api/events/EventRoutes.js'
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use('/api/auth', authrouter)
 app.use('/api/availabilities', availabilityRouter)
+app.use('/api/events', eventRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
