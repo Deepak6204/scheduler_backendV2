@@ -31,14 +31,14 @@ class AuthController {
         phoneNumber,
         connection,
       });
-
+      availabilities.userId = userIdBinary;
       if (Array.isArray(availabilities) && availabilities.length > 0) {
-        const availabilityWithUserId = availabilities.map(item => ({
-          ...item,
-          userId,
-        }));
+        // const availabilityWithUserId = availabilities.map(item => ({
+        //   ...item,
+        //   userIdBinary,
+        // }));
 
-        await AvModel.addMultipleAvailabilities(availabilityWithUserId, connection);
+        await AvModel.addMultipleAvailabilities(availabilities, connection);
       }
 
       await connection.commit();
@@ -87,7 +87,6 @@ class AuthController {
       const token = jwt.sign({ userId: user.user_id, email: user.email }, JWT_SECRET, {
         expiresIn: '1d',
       });
-
       return res.status(200).json({
         status: 'success',
         message: 'Login successful',

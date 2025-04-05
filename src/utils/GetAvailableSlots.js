@@ -26,7 +26,6 @@ function getValidChunks(start, end, chunkSize) {
 
 function getAvailableSlots(availability, meetings, chunkSize = 60, timezone = 'UTC') {
   const availableSlots = [];
-
   let currentStart = dayjs(availability.start);
   const endTime = dayjs(availability.end);
 
@@ -37,39 +36,49 @@ function getAvailableSlots(availability, meetings, chunkSize = 60, timezone = 'U
     }))
     .sort((a, b) => a.start - b.start);
 
-  for (let i = 0; i <= meetings.length; i++) {
+  // Handle time before first meeting
+  for (let i = 0; i < meetings.length; i++) {
     const meeting = meetings[i];
-    const nextMeetingStart = meeting ? meeting.start : endTime;
+    const nextMeetingStart = meeting.start;
 
     const freeStart = currentStart;
     const freeEnd = nextMeetingStart;
 
     if (freeStart.isBefore(freeEnd)) {
       const chunks = getValidChunks(freeStart, freeEnd, chunkSize);
-
       chunks.forEach(slot => {
         const overlaps = meetings.some(meet =>
           slot.start.isBefore(meet.end) && slot.end.isAfter(meet.start)
         );
 
         if (!overlaps) {
-          const nextOverlap = meetings.some(meet =>
-            slot.end.isSame(meet.start)
-          );
-
-          if (!nextOverlap) {
-            availableSlots.push({
-              start: slot.start.tz(timezone).format('HH:mm'),
-              end: slot.end.tz(timezone).format('HH:mm')
-            });            
-          }
+          availableSlots.push({
+            start: slot.start.tz(timezone).format('HH:mm'),
+            end: slot.end.tz(timezone).format('HH:mm')
+          });
         }
       });
     }
 
-    if (meeting) {
-      currentStart = meeting.end.add(BREAK_DURATION, 'minute');
-    }
+    // Move currentStart to after meeting + break
+    currentStart = meeting.end.add(BREAK_DURATION, 'minute');
+  }
+
+  // Handle time after last meeting
+  if (currentStart.isBefore(endTime)) {
+    const chunks = getValidChunks(currentStart, endTime, chunkSize);
+    chunks.forEach(slot => {
+      const overlaps = meetings.some(meet =>
+        slot.start.isBefore(meet.end) && slot.end.isAfter(meet.start)
+      );
+
+      if (!overlaps) {
+        availableSlots.push({
+          start: slot.start.tz(timezone).format('HH:mm'),
+          end: slot.end.tz(timezone).format('HH:mm')
+        });
+      }
+    });
   }
 
   return availableSlots;

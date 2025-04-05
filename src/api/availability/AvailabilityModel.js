@@ -22,11 +22,11 @@ class AvailabilityModel {
             dataArray.forEach((entry) => {
                 const availabilityId = UuidGen.generateUuidV7Binary();
                 const availabilityIdBinary = UuidGen.uuidToBinary(availabilityId);
-                const userIdBinary = UuidGen.uuidToBinary(dataArray.userId);
+                // const userIdBinary = UuidGen.uuidToBinary(dataArray.userId);
 
                 values.push(
                     availabilityIdBinary,
-                    userIdBinary,
+                    dataArray.userId,
                     entry.dayOfWeek,
                     entry.startTime,
                     entry.endTime,

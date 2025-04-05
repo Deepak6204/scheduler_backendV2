@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -11,6 +12,7 @@ import slotRoutes from './api/misc/SlotRoutes.js'
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);

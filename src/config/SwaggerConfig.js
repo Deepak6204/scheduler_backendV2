@@ -23,11 +23,6 @@ const swaggerOptions = {
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
   },
   apis: ['./src/api/auth/AuthRoutes.js', './src/api/availability/AvailabilityRoutes.js', './src/api/events/EventRoutes.js', './src/api/misc/SlotRoutes.js'], // include all route files that contain Swagger comments
 };

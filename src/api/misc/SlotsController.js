@@ -28,12 +28,12 @@ export const getFreeSlotsByDate = async (req, res) => {
 
     const allMeetings = await EventModel.getEventsByHost(userId);
     const meetingsOnDate = allMeetings.filter(meeting =>
-      dayjs(meeting.startTime).isSame(date, 'day')
+      dayjs(meeting.date).isSame(date, 'day')
     );
 
     const formattedMeetings = meetingsOnDate.map(meeting => ({
-      start: meeting.startTime,
-      end: meeting.endTime
+      start: `${date}T${meeting.startTime}`,
+      end: `${date}T${meeting.endTime}`
     }));
 
     const availableSlots = getAvailableSlots(
