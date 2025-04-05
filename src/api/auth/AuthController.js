@@ -113,7 +113,6 @@ class AuthController {
   static async getProfile(req, res) {
     try {
       const user = await AuthModel.getUserByEmail(req.user.email);
-      console.log('User:', user); 
       if (!user) {
         return res.status(404).json({
           status: 'error',

@@ -25,7 +25,7 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required: [guestEmail, title, startTime, endTime]
+ *             required: [guestEmail, title, date, startTime, endTime]
  *             properties:
  *               guestEmail:
  *                 type: string
@@ -34,15 +34,18 @@ const router = express.Router();
  *                 type: string
  *               description:
  *                 type: string
+ *               date:
+ *                 type: string
+ *                 format: date
  *               startTime:
  *                 type: string
- *                 format: date-time
+ *                 format: time
  *               endTime:
  *                 type: string
- *                 format: date-time
+ *                 format: time
  *               meeting_url:
- *                type: string
- *                format: uri
+ *                 type: string
+ *                 format: uri
  *     responses:
  *       201:
  *         description: Event created successfully
@@ -119,15 +122,18 @@ router.get('/:eventId', authMiddleware(true), EventController.getById);
  *                 type: string
  *               description:
  *                 type: string
+ *               date:
+ *                 type: string
+ *                 format: date
  *               startTime:
  *                 type: string
- *                 format: date-time
+ *                 format: time
  *               endTime:
  *                 type: string
- *                 format: date-time
+ *                 format: time
  *               meeting_url:
- *                type: string
- *                format: uri
+ *                 type: string
+ *                 format: uri
  *     responses:
  *       200:
  *         description: Event updated successfully

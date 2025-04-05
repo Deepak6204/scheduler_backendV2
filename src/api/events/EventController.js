@@ -6,7 +6,7 @@ class EventController {
   static async create(req, res) {
 
     try {
-      const { guestEmail, title, description, startTime, endTime, meeting_url } = req.body;
+      const { guestEmail, title, description, startTime, endTime, meeting_url, date } = req.body;
       const hostId = req.user.userId;
       if (!hostId || !guestEmail || !title || !startTime || !endTime) {
         return res.status(400).json({
@@ -15,7 +15,7 @@ class EventController {
         });
       }
 
-      const eventData = await EventModel.createEvent({ hostId, guestEmail, title, description, startTime, endTime, meeting_url });
+      const eventData = await EventModel.createEvent({ hostId, guestEmail, title, description, startTime, endTime, meeting_url, date });
 
       return res.status(201).json({
         status: 'success',

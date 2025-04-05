@@ -22,7 +22,7 @@ class AvailabilityModel {
             dataArray.forEach((entry) => {
                 const availabilityId = UuidGen.generateUuidV7Binary();
                 const availabilityIdBinary = UuidGen.uuidToBinary(availabilityId);
-                const userIdBinary = UuidGen.uuidToBinary(entry.userId);
+                const userIdBinary = UuidGen.uuidToBinary(dataArray.userId);
 
                 values.push(
                     availabilityIdBinary,
@@ -65,8 +65,6 @@ class AvailabilityModel {
             const userIdBinary = UuidGen.uuidToBinary(userId);
             const [rows] = await connection.query(
                 `SELECT 
-                    availability_id AS availabilityId, 
-                    user_id AS userId,
                     day_of_week AS dayOfWeek,
                     start_time AS startTime,
                     end_time AS endTime,

@@ -5,9 +5,10 @@ import UuidGen from '../../services/UuidGen.js';
 class AvailabilityController {
   static async addMultiple(req, res) {
     const connection = await pool.getConnection();
-
+    
     try {
       const dataArray = req.body.availabilities;
+      dataArray.userId = req.user.userId;
 
       if (!Array.isArray(dataArray)) {
         connection.release();
@@ -40,15 +41,14 @@ class AvailabilityController {
     try {
       const availabilities = await AvModel.getAvailabilitiesByUserId(userId);
       
-      const formattedAvailabilities = availabilities.map((availability) => ({
-        ...availability,
-        availabilityId: UuidGen.binaryToUuid(availability.availabilityId),
-        userId: UuidGen.binaryToUuid(availability.userId),
-      }));
-
+      // const formattedAvailabilities = availabilities.map((availability) => ({
+      //   ...availability,
+      //   availabilityId: UuidGen.binaryToUuid(availability.availabilityId),
+      //   userId: UuidGen.binaryToUuid(availability.userId),
+      // }));
       return res.status(200).json({
         status: 'success',
-        data: formattedAvailabilities,
+        data: availabilities,
       });
     } catch (err) {
       console.error('Error fetching availabilities:', err);

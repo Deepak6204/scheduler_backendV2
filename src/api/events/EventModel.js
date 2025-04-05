@@ -2,7 +2,7 @@ import UuidGen from '../../services/UuidGen.js';
 import pool from '../../config/DatabaseConfig.js';
 
 class EventModel {
-    static async createEvent({ hostId, guestEmail, title, description, startTime, endTime, meeting_url }) {
+    static async createEvent({ hostId, guestEmail, title, description, startTime, endTime, meeting_url, date }) {
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
@@ -15,8 +15,8 @@ class EventModel {
 
             const query = `
                 INSERT INTO events (
-                    event_id, host_id, guest_email, title, description, start_time, end_time, meeting_url
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    event_id, host_id, guest_email, title, description, date, start_time, end_time, meeting_url
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
@@ -25,6 +25,7 @@ class EventModel {
                 guestEmail,
                 title,
                 description,
+                date,
                 startTime,
                 endTime,
                 meeting_url
@@ -32,7 +33,7 @@ class EventModel {
 
             await connection.query(query, values);
             await connection.commit();
-            return { eventId, hostId, guestEmail, title, description, startTime, endTime, meeting_url };
+            return { eventId, hostId, guestEmail, title, description, date, startTime, endTime, meeting_url };
         } catch (err) {
             await connection.rollback();
             console.error("Error creating event:", err);
@@ -72,6 +73,7 @@ class EventModel {
                 fields.push("meeting_url = ?");
                 values.push(updatedData.meeting_url);
             }
+            // add the update for dates
 
             if (fields.length === 0) {
                 throw new Error("No fields to update");
@@ -133,6 +135,7 @@ class EventModel {
                     guest_email AS guestEmail,
                     title,
                     description,
+                    date,
                     start_time AS startTime,
                     end_time AS endTime,
                     meeting_url AS meetingUrl
@@ -162,8 +165,10 @@ class EventModel {
                     guest_email AS guestEmail,
                     title,
                     description,
+                    date,
                     start_time AS startTime,
-                    end_time AS endTime
+                    end_time AS endTime,
+                    meeting_url AS meetingUrl
                  FROM events
                  WHERE event_id = ?`,
                 [eventIdBinary]

@@ -1,5 +1,6 @@
 import express from 'express';
 import AvailabilityController from './AvailabilityController.js';
+import authMiddleware from '../../middleware/AuthMiddleware.js';
 
 const router = express.Router();
 
@@ -42,7 +43,7 @@ const router = express.Router();
  *       201:
  *         description: Availabilities added
  */
-router.post('/', AvailabilityController.addMultiple);
+router.post('/', authMiddleware(true), AvailabilityController.addMultiple);
 
 /**
  * @swagger
