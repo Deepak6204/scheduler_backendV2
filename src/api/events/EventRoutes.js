@@ -1,5 +1,5 @@
 import express from 'express';
-import EventController from './EventController.js';
+import { createEvent, deleteEvent, getEventByHost, updateEvent } from './EventController.js';
 import authMiddleware from '../../middleware/AuthMiddleware.js';
 
 const router = express.Router();
@@ -54,7 +54,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.post('/', authMiddleware(true), EventController.create);
+router.post('/', authMiddleware(true), createEvent);
 
 /**
  * @swagger
@@ -70,7 +70,7 @@ router.post('/', authMiddleware(true), EventController.create);
  *       500:
  *         description: Internal server error
  */
-router.get('/', authMiddleware(true), EventController.getByHost);
+router.get('/', authMiddleware(true), getEventByHost);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.get('/', authMiddleware(true), EventController.getByHost);
  *       500:
  *         description: Internal server error
  */
-router.get('/:eventId', authMiddleware(true), EventController.getById);
+router.get('/:eventId', authMiddleware(true), getEventByHost);
 
 /**
  * @swagger
@@ -142,7 +142,7 @@ router.get('/:eventId', authMiddleware(true), EventController.getById);
  *       500:
  *         description: Internal server error
  */
-router.put('/:eventId', authMiddleware(true), EventController.update);
+router.put('/:eventId', authMiddleware(true), updateEvent);
 
 /**
  * @swagger
@@ -167,6 +167,6 @@ router.put('/:eventId', authMiddleware(true), EventController.update);
  *       500:
  *         description: Internal server error
  */
-router.delete('/:eventId', authMiddleware(true), EventController.delete);
+router.delete('/:eventId', authMiddleware(true), deleteEvent);
 
 export default router;

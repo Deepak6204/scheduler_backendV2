@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import getAvailableSlots from '../../utils/GetAvailableSlots.js';
-import AvailabilityModel from '../availability/AvailabilityModel.js';
-import EventModel from '../events/EventModel.js';
+import { getAvailabilitiesByUserId } from '../availability/AvailabilityModel.js';
+import { getEventsByHostModel } from '../events/EventModel.js';
 
 export const getFreeSlotsByDate = async (req, res) => {
   try {
@@ -13,7 +13,7 @@ export const getFreeSlotsByDate = async (req, res) => {
     }
 
     const dayOfWeek = dayjs(date).format('dddd');
-    const weeklyAvailability = await AvailabilityModel.getAvailabilitiesByUserId(userId);
+    const weeklyAvailability = await getAvailabilitiesByUserId(userId);
     const dayAvailability = weeklyAvailability.find(
       av => av.dayOfWeek === dayOfWeek && av.isActive
     );
@@ -26,7 +26,7 @@ export const getFreeSlotsByDate = async (req, res) => {
       end: `${date}T${dayAvailability.endTime}`
     };
 
-    const allMeetings = await EventModel.getEventsByHost(userId);
+    const allMeetings = await getEventsByHostModel(userId);
     const meetingsOnDate = allMeetings.filter(meeting =>
       dayjs(meeting.date).isSame(date, 'day')
     );

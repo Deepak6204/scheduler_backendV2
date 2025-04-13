@@ -1,5 +1,5 @@
 import express from 'express';
-import AuthController from './AuthController.js';
+import { deleteUser, forgotPassword, getProfile, login, resetPassword, signup } from './AuthController.js';
 import authMiddleware from '../../middleware/AuthMiddleware.js';
 
 const router = express.Router();
@@ -114,7 +114,7 @@ const router = express.Router();
  *                   example: Internal server error
  */
 
-router.post('/signup', AuthController.signup);
+router.post('/signup', signup);
 
 /**
  * @swagger
@@ -205,7 +205,7 @@ router.post('/signup', AuthController.signup);
  *                   type: string
  *                   example: Internal server error
  */
-router.post('/signin', AuthController.login);
+router.post('/signin', login);
 
 /**
  * @swagger
@@ -271,7 +271,7 @@ router.post('/signin', AuthController.login);
  *                   type: string
  *                   example: Internal server error
  */
-router.get('/profile',authMiddleware(true), AuthController.getProfile); 
+router.get('/profile',authMiddleware(true), getProfile); 
 
 /**
  * @swagger
@@ -324,7 +324,7 @@ router.get('/profile',authMiddleware(true), AuthController.getProfile);
  *                   type: string
  *                   example: Internal server error
  */
-router.delete('/delete',authMiddleware(true), AuthController.deleteUser); 
+router.delete('/delete',authMiddleware(true), deleteUser); 
 
 /**
  * @swagger
@@ -388,7 +388,7 @@ router.delete('/delete',authMiddleware(true), AuthController.deleteUser);
  *                   type: string
  *                   example: Internal server error
  */
-router.post('/forgot-password', AuthController.forgotPassword);
+router.post('/forgot-password', forgotPassword);
 
 /**
  * @swagger
@@ -458,6 +458,6 @@ router.post('/forgot-password', AuthController.forgotPassword);
  *                   type: string
  *                   example: Internal server error
  */
-router.post('/reset-password',authMiddleware(true), AuthController.resetPassword);
+router.post('/reset-password',authMiddleware(true), resetPassword);
 
 export default router;

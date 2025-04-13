@@ -1,19 +1,14 @@
 import { uuidv7 } from 'uuidv7';
 import { parse, stringify } from 'uuid';
 
-class UuidGen {
-    static generateUuidV7Binary() {
-        return uuidv7();
-    }
+export const generateUuidV7Binary = () => {
+    return uuidv7();
+};
 
-    static uuidToBinary(uuidStr) {
-        return Buffer.from(parse(uuidStr));
-    }
+export const uuidToBinary = (uuidStr) => {
+    return Buffer.from(parse(uuidStr));
+};
 
-    static binaryToUuid(binaryUuid) {
-        return stringify(binaryUuid);
-    }
-
-}
-
-export default UuidGen;
+export const binaryToUuid = (binaryUuid) => {
+    return stringify(binaryUuid);
+};

@@ -1,5 +1,11 @@
 import express from 'express';
-import AvailabilityController from './AvailabilityController.js';
+import {
+    addMultiple,
+    getByUserId,
+    update,
+    deleteAvailability,
+  } from './AvailabilityController.js';
+  
 import authMiddleware from '../../middleware/AuthMiddleware.js';
 
 const router = express.Router();
@@ -43,7 +49,7 @@ const router = express.Router();
  *       201:
  *         description: Availabilities added
  */
-router.post('/', authMiddleware(true), AvailabilityController.addMultiple);
+router.post('/', authMiddleware(true), addMultiple);
 
 /**
  * @swagger
@@ -61,7 +67,7 @@ router.post('/', authMiddleware(true), AvailabilityController.addMultiple);
  *       200:
  *         description: A list of user availabilities
  */
-router.get('/:userId', AvailabilityController.getByUserId);
+router.get('/:userId', getByUserId);
 
 /**
  * @swagger
@@ -94,7 +100,7 @@ router.get('/:userId', AvailabilityController.getByUserId);
  *       200:
  *         description: Availability updated
  */
-router.put('/:availabilityId', AvailabilityController.update);
+router.put('/:availabilityId', update);
 
 /**
  * @swagger
@@ -117,6 +123,6 @@ router.put('/:availabilityId', AvailabilityController.update);
  *       200:
  *         description: Availability deleted
  */
-router.delete('/:availabilityId', AvailabilityController.delete);
+router.delete('/:availabilityId', deleteAvailability);
 
 export default router;
